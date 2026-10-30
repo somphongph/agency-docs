@@ -1,0 +1,55 @@
+# Agency Dashboard — local/production-like stack
+#
+#   cd agency-docs/docker
+#   docker compose up -d --build       # UI on http://localhost:4200, API on http://localhost:8080
+#   docker compose down                # stop (add -v to drop named volumes)
+#
+# Each Dockerfile lives next to the code it builds (agency-api/Dockerfile,
+# agency-web/Dockerfile); this file only wires the two images together.
+# The web container proxies /api/* to the api service, so the browser only ever
+# talks to one origin and no CORS setup is required.
+
+name: agency-dashboard
+
+services:
+  api:
+    build:
+      context: ../../agency-api
+      dockerfile: Dockerfile
+    image: agency-api:local
+    container_name: agency-api
+    ports:
+      - "8080:8080"
+    environment:
+      # Logs and any implicit JVM date handling follow the same zone as the API payload.
+      TZ: Asia/Bangkok
+    healthcheck:
+      test:
+        - CMD
+        - bash
+        - -c
+        - exec 3<>/dev/tcp/127.0.0.1/8080 && printf 'GET /api/v1/dashboard HTTP/1.0\r\n\r\n' >&3 && head -1 <&3 | grep -q '200'
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ../../agency-web
+      dockerfile: Dockerfile
+    image: agency-web:local
+    container_name: agency-web
+    ports:
+      - "4200:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1/"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
