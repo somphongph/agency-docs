@@ -1,0 +1,21 @@
+# Probe targets — edit this file, no restart needed (file_sd reloads it every 30s).
+#
+# Every entry here becomes one `probe_success` / `probe_duration_seconds` series.
+# The URL ends up as the `instance` label, so keep the list short: each scrape makes
+# a real HTTP request.
+
+- targets:
+    - https://dw0pg1vujg42n.cloudfront.net/
+    - https://dw0pg1vujg42n.cloudfront.net/api/v1/health
+  labels:
+    env: production
+    kind: web
+
+# Local Docker stack (../agency-stack). Uncomment when `make up` is running,
+# otherwise probe_success stays 0 and the SiteDown alert fires.
+# - targets:
+#     - http://host.docker.internal:4200/
+#     - http://host.docker.internal:8080/api/v1/health
+#   labels:
+#     env: local
+#     kind: web

@@ -6,11 +6,17 @@
 agency-api/Dockerfile          # Spring Boot (multi-stage: maven build → JRE runtime)
 agency-api/.dockerignore
 agency-web/Dockerfile     # Angular build → nginx
-agency-web/nginx.conf     # SPA fallback, cache headers, proxy /api → api:8080
+agency-web/nginx.conf.template # SPA fallback, cache headers, proxy /api → $API_HOST (render ตอน start)
 agency-web/.dockerignore
 
 agency-docs/docker/
-└─ docker-compose.yml          # ชี้ build context ไปที่ ../../agency-api และ ../../agency-web
+├─ Makefile                    # make up / down / logs  +  make infra / infra-down
+├─ agency-stack/               # stack ของแอป: api + web
+│  └─ docker-compose.yml       # build context ../../agency-api และ ../../agency-web
+└─ agency-infra/               # observability stack (Grafana + Prometheus) — แยกจาก stack ของแอป
+   ├─ docker-compose.yml
+   ├─ prometheus/prometheus.yml
+   └─ grafana/provisioning/datasources/prometheus.yml
 ```
 
 ## ใช้งาน
@@ -18,15 +24,17 @@ agency-docs/docker/
 ```bash
 cd agency-docs/docker
 
-docker compose up -d --build     # build + start
-docker compose ps                # ดูสถานะ (healthcheck)
-docker compose logs -f api       # ดู log
-docker compose down              # หยุดและลบ container/network
+make up          # build + start (docker compose -f agency-stack/docker-compose.yml up -d --build)
+make ps          # ดูสถานะ (healthcheck)
+make logs        # ดู log ทั้ง stack
+make down        # หยุดและลบ container/network (make down ARGS=-v เพื่อลบ volumes)
 ```
+
+หรือเรียก compose ตรง ๆ: `cd agency-stack && docker compose up -d --build`
 
 | Service | Container port | Host port | เข้าถึง |
 |---|---|---|---|
-| api | 8080 | 8080 | http://localhost:8080/api/v1/dashboard |
+| api | 8080 | 8080 | http://localhost:8080/api/v1/health |
 | web | 80 | 4200 | http://localhost:4200 |
 
 > web ใช้พอร์ต 4200 เหมือน `ng serve` เพื่อให้เปิด URL เดิมได้ และ nginx proxy `/api/*`
@@ -43,7 +51,7 @@ cd agency-web && docker build -t agency-web .
 
 ## Healthcheck
 
-- **api**: probe `/api/v1/dashboard` จริงผ่าน bash `/dev/tcp` (image เป็น JRE ล้วน ไม่มี curl/wget)
+- **api**: probe `/api/v1/health` จริงผ่าน bash `/dev/tcp` (image เป็น JRE ล้วน ไม่มี curl/wget)
   → ถ้าได้ `200` แปลว่า Spring context พร้อม ไม่ใช่แค่ port เปิด
 - **web**: `wget --spider http://127.0.0.1/`
 - `web` มี `depends_on: api: condition: service_healthy` จึงไม่ขึ้นก่อน API พร้อม
@@ -54,3 +62,24 @@ cd agency-web && docker build -t agency-web .
 - Runtime ของ API เป็น user `app` (uid 1001) ไม่ใช่ root
 - `JAVA_OPTS` ตั้ง `-XX:MaxRAMPercentage=75` เพื่อให้ heap ปรับตาม memory limit ของ container
 - Image size (arm64, ทดสอบจริง): api ~517MB (compressed ~133MB), web ~76MB (compressed ~22MB)
+
+## Observability (Grafana + Prometheus)
+
+แยก stack ต่างหากที่ `agency-infra/` — ไม่ผูกกับ compose ของแอป:
+
+```bash
+cd agency-docs/docker
+
+make infra          # = docker compose -f agency-infra/docker-compose.yml up -d
+make infra-ps       # ดูสถานะ container
+make infra-logs     # ดู log
+make infra-down     # = ... down   (เพิ่ม ARGS=-v เพื่อลบ volumes)
+```
+
+| URL | หมายเหตุ |
+|---|---|
+| http://localhost:3000 | Grafana (user `admin`, password `GRAFANA_ADMIN_PASSWORD` หรือ `admin`) |
+| http://localhost:9090 | Prometheus |
+
+รายละเอียด + วิธี scrape `agency-api` (ต้องเพิ่ม actuator/micrometer ก่อน) ดูที่
+[`agency-infra/README.md`](agency-infra/README.md)

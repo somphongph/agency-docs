@@ -1,0 +1,94 @@
+# Agency infrastructure — observability stack (Grafana + Prometheus)
+#
+#   cd agency-docs/docker/agency-infra
+#   docker compose up -d
+#   docker compose down          # add -v to drop the named volumes (dashboards/data)
+#
+# Grafana    http://localhost:3000   (admin / GRAFANA_ADMIN_PASSWORD, default: admin)
+# Prometheus http://localhost:9090
+#
+# This stack is independent from ../docker-compose.yml (the app). To scrape the API
+# container, attach prometheus to the app network — see README.md.
+
+name: agency-infra
+
+services:
+  blackbox:
+    image: prom/blackbox-exporter:v0.29.1
+    container_name: agency-blackbox
+    command:
+      - --config.file=/etc/blackbox_exporter/blackbox.yml
+    ports:
+      - "9115:9115"
+    volumes:
+      - ./blackbox/blackbox.yml:/etc/blackbox_exporter/blackbox.yml:ro
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1:9115/"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v3.15.1
+    container_name: agency-prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=15d
+      # Allows `curl -X POST http://localhost:9090/-/reload` after editing prometheus.yml
+      - --web.enable-lifecycle
+    ports:
+      - "9090:9090"
+    extra_hosts:
+      # Lets Prometheus scrape the host-mapped API port on Linux as well as Docker Desktop.
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      blackbox:
+        condition: service_started
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/rules:/etc/prometheus/rules:ro
+      - ./prometheus/targets:/etc/prometheus/targets:ro
+      - prometheus-data:/prometheus
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1:9090/-/ready"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:13.2.5
+    container_name: agency-grafana
+    depends_on:
+      prometheus:
+        condition: service_healthy
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      # Change it (or export GRAFANA_ADMIN_PASSWORD) before exposing this stack.
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      # Anonymous access is handy locally; turn it off if the port is reachable by others.
+      GF_AUTH_ANONYMOUS_ENABLED: ${GRAFANA_ANONYMOUS_ENABLED:-true}
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
+    healthcheck:
+      test: ["CMD-SHELL", "wget --quiet --spider http://127.0.0.1:3000/api/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    restart: unless-stopped
+
+volumes:
+  prometheus-data:
+  grafana-data:

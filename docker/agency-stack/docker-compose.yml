@@ -9,12 +9,12 @@
 # The web container proxies /api/* to the api service, so the browser only ever
 # talks to one origin and no CORS setup is required.
 
-name: agency-dashboard
+name: agency-stack
 
 services:
   api:
     build:
-      context: ../../agency-api
+      context: ../../../agency-api
       dockerfile: Dockerfile
     image: agency-api:local
     container_name: agency-api
@@ -28,7 +28,7 @@ services:
         - CMD
         - bash
         - -c
-        - exec 3<>/dev/tcp/127.0.0.1/8080 && printf 'GET /api/v1/dashboard HTTP/1.0\r\n\r\n' >&3 && head -1 <&3 | grep -q '200'
+        - exec 3<>/dev/tcp/127.0.0.1/8080 && printf 'GET /api/v1/health HTTP/1.0\r\n\r\n' >&3 && head -1 <&3 | grep -q '200'
       interval: 10s
       timeout: 5s
       retries: 5
@@ -37,7 +37,7 @@ services:
 
   web:
     build:
-      context: ../../agency-web
+      context: ../../../agency-web
       dockerfile: Dockerfile
     image: agency-web:local
     container_name: agency-web
@@ -46,6 +46,10 @@ services:
     depends_on:
       api:
         condition: service_healthy
+    environment:
+      # Rendered into nginx.conf at container start (see agency-web/Dockerfile).
+      # Change this to point the UI at another API host without rebuilding the image.
+      API_HOST: http://api:8080
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1/"]
       interval: 10s
