@@ -10,13 +10,18 @@ agency-web/nginx.conf.template # SPA fallback, cache headers, proxy /api → $AP
 agency-web/.dockerignore
 
 agency-docs/docker/
-├─ Makefile                    # make up / down / logs  +  make infra / infra-down
-├─ agency-stack/               # stack ของแอป: api + web
-│  └─ docker-compose.yml       # build context ../../agency-api และ ../../agency-web
-└─ agency-infra/               # observability stack (Grafana + Prometheus) — แยกจาก stack ของแอป
+├─ Makefile                    # up/down/logs, infra, build-versions, pull
+├─ agency-stack/               # stack ของแอป: api + web (build จาก source)
+│  └─ docker-compose.yml
+├─ agency-pull/                # รัน image ที่ build ไว้ (เดโม develop vs sse)
+│  ├─ docker-compose.yml
+│  └─ README.md
+├─ scripts/build-versions.sh   # build agency-{api,web}:{develop,sse} จาก git refs
+└─ agency-infra/               # observability stack (Grafana + Prometheus + blackbox)
    ├─ docker-compose.yml
-   ├─ prometheus/prometheus.yml
-   └─ grafana/provisioning/datasources/prometheus.yml
+   ├─ prometheus/{prometheus.yml,rules,targets}
+   ├─ blackbox/blackbox.yml
+   └─ grafana/{provisioning,dashboards}
 ```
 
 ## ใช้งาน
@@ -83,3 +88,21 @@ make infra-down     # = ... down   (เพิ่ม ARGS=-v เพื่อล�
 
 รายละเอียด + วิธี scrape `agency-api` (ต้องเพิ่ม actuator/micrometer ก่อน) ดูที่
 [`agency-infra/README.md`](agency-infra/README.md)
+
+## เดโม 2 เวอร์ชัน (develop vs feature/sse)
+
+```bash
+cd agency-docs/docker
+make build-versions                  # build agency-{api,web}:{develop,sse}
+make pull                            # รัน develop บน 8081/4201
+API_TAG=sse WEB_TAG=sse make pull    # สลับเป็น feature/sse
+make pull-down
+```
+
+| | develop (8081/4201) | feature/sse (8081/4201) |
+|---|---|---|
+| web | polling ทุก 5 วิ | SSE |
+| `/api/v1/health` | 404 | 200 |
+| `/api/v1/dashboard/stream` | 404 | SSE event |
+
+รายละเอียด: [`agency-pull/README.md`](agency-pull/README.md)

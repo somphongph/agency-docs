@@ -1,0 +1,4 @@
+# Local env files (see docker/agency-pull/.env.example)
+.env
+.env.local
+.DS_Store
