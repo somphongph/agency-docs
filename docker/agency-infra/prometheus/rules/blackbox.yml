@@ -1,0 +1,37 @@
+groups:
+  - name: blackbox-http
+    rules:
+      - alert: SiteDown
+        expr: probe_success{job="blackbox-http"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.instance }} is not reachable"
+          description: "blackbox probe has been failing for 2 minutes (status code {{ $value }})."
+
+      - alert: SiteSlow
+        expr: probe_duration_seconds{job="blackbox-http"} > 2
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }} responds slowly"
+          description: "Probe takes {{ $value | humanize }}s (threshold 2s)."
+
+      - alert: SiteNotOk
+        expr: probe_http_status_code{job="blackbox-http"} != 200
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }} returns {{ $value }}"
+          description: "Expected HTTP 200. 0 means no response at all (DNS/connect/TLS failure)."
+
+      - alert: CertExpiringSoon
+        expr: (probe_ssl_earliest_cert_expiry{job="blackbox-http"} - time()) / 86400 < 14
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "TLS certificate for {{ $labels.instance }} expires in {{ $value | printf \"%.0f\" }} days"

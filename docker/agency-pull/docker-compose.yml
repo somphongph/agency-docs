@@ -1,0 +1,53 @@
+# Agency Dashboard — run prebuilt images (no build step)
+#
+#   cd agency-docs/docker
+#   make build-versions   # build agency-api:{develop,sse} + agency-web:{develop,sse} from git refs
+#   make pull             # run the "develop" images on 8081/4201
+#   API_TAG=sse WEB_TAG=sse make pull   # switch to the SSE version
+#
+# Ports differ from agency-stack (8080/4200) so both versions can run side by side.
+
+name: agency-pull
+
+services:
+  api:
+    image: agency-api:${API_TAG:-develop}
+    container_name: agency-api-pull
+    ports:
+      - "8081:8080"
+    environment:
+      TZ: Asia/Bangkok
+      SERVER_PORT: "8080"
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
+    healthcheck:
+      # /api/v1/dashboard exists in both versions; /api/v1/health only in feature/sse.
+      test:
+        - CMD
+        - bash
+        - -c
+        - exec 3<>/dev/tcp/127.0.0.1/8080 && printf 'GET /api/v1/dashboard HTTP/1.0\r\n\r\n' >&3 && head -1 <&3 | grep -q '200'
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+  web:
+    image: agency-web:${WEB_TAG:-develop}
+    container_name: agency-web-pull
+    ports:
+      - "4201:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      # Only the feature/sse image renders this into nginx.conf; the develop image
+      # already hardcodes http://api:8080, so the value is harmless there.
+      API_HOST: http://api:8080
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1/"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped

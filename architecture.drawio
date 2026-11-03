@@ -1,0 +1,205 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" type="device" version="24.7.17">
+  <diagram id="runtime" name="1. Runtime (AWS)">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="t1" value="Agency Dashboard — Production runtime" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=20;fontColor=#212121;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="20" width="700" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="aws" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#90A4AE;fontSize=12;align=center;verticalAlign=middle;dashed=1;dashPattern=6 4;" vertex="1" parent="1">
+          <mxGeometry x="250" y="90" width="1120" height="470" as="geometry" />
+        </mxCell>
+        <mxCell id="awsLabel" value="AWS — ap-southeast-7" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=12;fontColor=#607D8B;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="96" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="obs" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F1FBFD;strokeColor=#4DD0E1;fontSize=12;align=center;verticalAlign=middle;dashed=1;dashPattern=6 4;" vertex="1" parent="1">
+          <mxGeometry x="250" y="600" width="1120" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="obsLabel" value="Observability (agency-infra, docker compose)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=12;fontColor=#00838F;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="606" width="500" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="user" value="&lt;b&gt;Browser&lt;/b&gt;&lt;br&gt;Angular 21 SPA&lt;br&gt;+ Operator (curl/Bruno)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#546E7A;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="230" width="170" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="cf" value="&lt;b&gt;CloudFront&lt;/b&gt;&lt;br&gt;E2NZZV53SFAJLJ&lt;br&gt;/ → S3 · /api/* → API" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="320" y="210" width="220" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="s3" value="&lt;b&gt;S3 (private) + OAC&lt;/b&gt;&lt;br&gt;agency-web-s3&lt;br&gt;index.html: no-cache&lt;br&gt;*.js/*.css: 1y immutable" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="640" y="150" width="260" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="api" value="&lt;b&gt;ECS Fargate — agency-api&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#EF6C00;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="640" y="320" width="300" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="api1" value="Spring Boot 4.1 · Java 21 · :8080" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#FFB74D;fontSize=11;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="655" y="350" width="270" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="api2" value="GET /api/v1/dashboard&lt;br&gt;POST /api/v1/dashboard/refresh&lt;br&gt;GET /api/v1/dashboard/stream (SSE)&lt;br&gt;GET /api/v1/health&lt;br&gt;GET /actuator/prometheus" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFB74D;fontSize=11;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="655" y="380" width="270" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="api3" value="SPRING_PROFILES_ACTIVE=prod · SERVER_PORT=8080" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#FFB74D;fontSize=10;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="655" y="488" width="270" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="ecr" value="&lt;b&gt;ECR&lt;/b&gt;&lt;br&gt;agency/agency-api:commit-sha" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="470" width="170" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="cw" value="&lt;b&gt;CloudWatch Logs&lt;/b&gt;&lt;br&gt;/ecs/agency-api" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFDE7;strokeColor=#F9A825;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="150" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="sm" value="&lt;b&gt;Secrets Manager / SSM&lt;/b&gt;&lt;br&gt;→ ECS secrets (valueFrom)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFDE7;strokeColor=#F9A825;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="250" width="200" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="prom" value="&lt;b&gt;Prometheus&lt;/b&gt;&lt;br&gt;:9090 · 15s scrape" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F7FA;strokeColor=#00838F;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="300" y="660" width="200" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="bb" value="&lt;b&gt;blackbox_exporter&lt;/b&gt;&lt;br&gt;:9115 · http_2xx probes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F7FA;strokeColor=#00838F;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="560" y="660" width="220" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="graf" value="&lt;b&gt;Grafana&lt;/b&gt;&lt;br&gt;:3000 · 2 dashboards" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F7FA;strokeColor=#00838F;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="840" y="660" width="210" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="dash" value="Blackbox — HTTP probes&lt;br&gt;API — Spring Boot metrics" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#4DD0E1;fontSize=11;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="840" y="755" width="210" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="gha" value="&lt;b&gt;GitHub Actions&lt;/b&gt;&lt;br&gt;deploy-api.yml · deploy-web-dev.yml" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#37474F;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="660" width="200" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="HTTPS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#37474F;fontSize=11;endArrow=block;endFill=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="user" target="cf">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="/* · OAC (GetObject)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#37474F;fontSize=11;endArrow=block;endFill=1;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="cf" target="s3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="/api/* (no cache, POST, SSE)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#37474F;fontSize=11;endArrow=block;endFill=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="cf" target="api">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="logs" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#37474F;fontSize=11;endArrow=block;endFill=1;exitX=1;exitY=0.15;exitDx=0;exitDy=0;entryX=0.5;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="api" target="cw">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="secrets" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#37474F;fontSize=11;endArrow=block;endFill=1;dashed=1;dashPattern=6 4;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.85;entryDx=0;entryDy=0;" edge="1" parent="1" source="sm" target="api">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="image pull" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#37474F;fontSize=11;endArrow=block;endFill=1;dashed=1;dashPattern=6 4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.15;entryDx=0;entryDy=0;" edge="1" parent="1" source="ecr" target="api">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="docker push" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#37474F;fontSize=11;endArrow=block;endFill=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="gha" target="ecr">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="register task def → update service" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#37474F;fontSize=11;endArrow=block;endFill=1;dashed=1;dashPattern=6 4;exitX=1;exitY=0.8;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="gha" target="api">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="aws s3 sync" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#37474F;fontSize=11;endArrow=block;endFill=1;dashed=1;dashPattern=6 4;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0.5;entryY=0.85;entryDx=0;entryDy=0;" edge="1" parent="1" source="gha" target="s3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" value="invalidate /index.html" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#37474F;fontSize=11;endArrow=block;endFill=1;dashed=1;dashPattern=6 4;exitX=1;exitY=0.15;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="gha" target="cf">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" value="scrape /actuator/prometheus" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#37474F;fontSize=11;endArrow=block;endFill=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.2;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="prom" target="api">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" value="scrape /probe" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#37474F;fontSize=11;endArrow=block;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="prom" target="bb">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" value="probe https (uptime, TLS)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#37474F;fontSize=11;endArrow=block;endFill=1;dashed=1;dashPattern=6 4;exitX=0.9;exitY=0;exitDx=0;exitDy=0;entryX=0.9;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="bb" target="cf">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" value="query" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#37474F;fontSize=11;endArrow=block;endFill=1;exitX=0;exitY=0.35;exitDx=0;exitDy=0;entryX=1;entryY=0.6;entryDx=0;entryDy=0;" edge="1" parent="1" source="graf" target="prom">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e15" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#37474F;fontSize=11;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="graf" target="dash">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lg" value="solid = request/pull&lt;br&gt;dashed = deploy / control plane" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#B0BEC5;fontSize=11;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="660" width="220" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="envs" name="2. Environments &amp; CI/CD">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="t2" value="Environments &amp; delivery pipelines" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=20;fontColor=#212121;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="20" width="700" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="local" value="&lt;b&gt;Local dev&lt;/b&gt;&lt;br&gt;&lt;br&gt;web  http://localhost:4200&lt;br&gt;(proxy /api → .env API_HOST)&lt;br&gt;api  http://localhost:8080&lt;br&gt;&lt;br&gt;pnpm start&lt;br&gt;./mvnw spring-boot:run" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=12;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="30" y="90" width="300" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="stack" value="&lt;b&gt;Docker (build)&lt;/b&gt;&lt;br&gt;&lt;br&gt;web :4200 · api :8080&lt;br&gt;&lt;br&gt;cd agency-docs/docker&lt;br&gt;make up&lt;br&gt;make ps / make logs / make down&lt;br&gt;&lt;br&gt;build จาก source ปัจจุบัน" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=12;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="360" y="90" width="300" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="pull" value="&lt;b&gt;Docker (prebuilt)&lt;/b&gt;&lt;br&gt;&lt;br&gt;web :4201 · api :8081&lt;br&gt;&lt;br&gt;make build-versions&lt;br&gt;make pull&lt;br&gt;API_TAG=sse WEB_TAG=sse make pull&lt;br&gt;&lt;br&gt;demo: develop (polling) vs sse" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#EF6C00;fontSize=12;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="690" y="90" width="320" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="prod" value="&lt;b&gt;Staging / Production (AWS)&lt;/b&gt;&lt;br&gt;&lt;br&gt;CloudFront → S3 (web)&lt;br&gt;CloudFront /api/* → ECS Fargate (api)&lt;br&gt;ECR image = commit SHA&lt;br&gt;Logs → CloudWatch&lt;br&gt;Secrets → Secrets Manager / SSM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;fontSize=12;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="90" width="330" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="s1" value="โค้ดเดียวกัน" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#37474F;fontSize=11;endArrow=block;endFill=1;dashed=1;dashPattern=6 4;" edge="1" parent="1" source="local" target="stack">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s2" value="build image" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#37474F;fontSize=11;endArrow=block;endFill=1;dashed=1;dashPattern=6 4;" edge="1" parent="1" source="stack" target="pull">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s3" value="ตรวจ artifact ก่อน deploy" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#37474F;fontSize=11;endArrow=block;endFill=1;dashed=1;dashPattern=6 4;" edge="1" parent="1" source="pull" target="prod">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ciTitle" value="CI/CD (GitHub Actions)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=16;fontColor=#212121;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="330" width="400" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="apiTest" value="agency-api&lt;br&gt;./mvnw test" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#37474F;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="30" y="380" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="apiBuild" value="buildx build&lt;br&gt;--platform $DOCKER_PLATFORM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#37474F;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="270" y="380" width="210" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="apiPush" value="push ECR&lt;br&gt;agency/agency-api:commit-sha" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#37474F;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="520" y="380" width="210" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="apiTd" value="render task definition&lt;br&gt;(env + secrets)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#37474F;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="770" y="380" width="210" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="apiDeploy" value="update ECS service&lt;br&gt;wait services-stable" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#37474F;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="380" width="230" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#37474F;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1" source="apiTest" target="apiBuild">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#37474F;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1" source="apiBuild" target="apiPush">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#37474F;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1" source="apiPush" target="apiTd">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#37474F;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1" source="apiTd" target="apiDeploy">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="webTest" value="agency-web&lt;br&gt;pnpm test" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#37474F;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="30" y="500" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="webBuild" value="pnpm build&lt;br&gt;dist/agency-web/browser" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#37474F;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="270" y="500" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="webSync" value="s3 sync (3 cache passes)&lt;br&gt;index no-cache · assets 1y" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#37474F;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="530" y="500" width="250" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="webInv" value="invalidate CloudFront&lt;br&gt;/ + /index.html" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#37474F;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="820" y="500" width="230" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="w1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#37474F;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1" source="webTest" target="webBuild">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="w2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#37474F;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1" source="webBuild" target="webSync">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="w3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#37474F;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1" source="webSync" target="webInv">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="note" value="&lt;b&gt;Auth&lt;/b&gt;: OIDC role (แนะนำ) หรือ static keys (AWS_AUTH_MODE)&lt;br&gt;&lt;b&gt;Secrets&lt;/b&gt;: AWS_ROLE_ARN · APP_ENV_JSON · APP_SECRETS_JSON (valueFrom → Secrets Manager)&lt;br&gt;&lt;b&gt;Cache&lt;/b&gt;: index.html = no-cache, *.js/*.css = immutable&lt;br&gt;&lt;b&gt;Health&lt;/b&gt;: ALB/ECS → /api/v1/health (ห้ามเปิด /actuator public)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#B0BEC5;fontSize=12;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="30" y="640" width="900" height="110" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
